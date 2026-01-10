@@ -16,5 +16,5 @@ Este libro de texto pretende ser autocontenido y no requiere experiencia previa 
 
 This textbook was made using  [Quarto](https://quarto.org/) which is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org/). To learn more about Quarto books visit <https://quarto.org/docs/books>.  
 
-The **online version** of the textbook is hosted by [Netlify](https://www.netlify.com) and the material is **free to use** for **non-commercial** purposes, and is licensed under the MIT License.   
+The **online version** of the textbook is hosted by **github pages** and the material is **free to use** for **non-commercial** purposes, and is licensed under the **MIT License**.   
 
