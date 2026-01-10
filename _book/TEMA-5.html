@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; TEMA 5: ANÁLISIS DE SUPERVIVENCIA – Análisis Estadístico con Ordenador de Datos Médicos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./TEMA-4.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-27c261d06b905028a18691de25d09dde.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./TEMA-5.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">TEMA 5: ANÁLISIS DE SUPERVIVENCIA</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Análisis Estadístico con Ordenador de Datos Médicos</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenido!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./TEMA-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">TEMA 1: PRUEBAS DIAGNÓSTICAS Y CURVAS ROC</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./TEMA-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">TEMA 2: ANÁLISIS DE LA VARIANZA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./TEMA-3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">TEMA 3: REGRESIÓN LINEAL MÚLTIPLE</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./TEMA-4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">TEMA 4: REGRESIÓN LOGISTICA</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./TEMA-5.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">TEMA 5: ANÁLISIS DE SUPERVIVENCIA</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción"><span class="header-section-number">5.1</span> Introducción</a>
+  <ul class="collapse">
+  <li><a href="#qué-es-el-análisis-de-supervivencia" id="toc-qué-es-el-análisis-de-supervivencia" class="nav-link" data-scroll-target="#qué-es-el-análisis-de-supervivencia"><span class="header-section-number">5.1.1</span> ¿Qué es el análisis de supervivencia?</a></li>
+  </ul></li>
+  <li><a href="#funciones-comunes-en-el-análisis-de-supervivencia" id="toc-funciones-comunes-en-el-análisis-de-supervivencia" class="nav-link" data-scroll-target="#funciones-comunes-en-el-análisis-de-supervivencia"><span class="header-section-number">5.2</span> Funciones comunes en el análisis de supervivencia</a>
+  <ul class="collapse">
+  <li><a href="#función-de-supervivencia-survival-function" id="toc-función-de-supervivencia-survival-function" class="nav-link" data-scroll-target="#función-de-supervivencia-survival-function"><span class="header-section-number">5.2.1</span> Función de supervivencia (survival function)</a></li>
+  <li><a href="#función-de-riesgo-acumulado-cummlative-hazard-function" id="toc-función-de-riesgo-acumulado-cummlative-hazard-function" class="nav-link" data-scroll-target="#función-de-riesgo-acumulado-cummlative-hazard-function"><span class="header-section-number">5.2.2</span> Función de riesgo acumulado (cummlative hazard function)</a></li>
+  <li><a href="#función-de-riesgo-hazard-function" id="toc-función-de-riesgo-hazard-function" class="nav-link" data-scroll-target="#función-de-riesgo-hazard-function"><span class="header-section-number">5.2.3</span> Función de riesgo (Hazard function)</a></li>
+  </ul></li>
+  <li><a href="#estimación-estadística-de-la-función-de-supervivencia-el-estimador-de-kaplan-meier" id="toc-estimación-estadística-de-la-función-de-supervivencia-el-estimador-de-kaplan-meier" class="nav-link" data-scroll-target="#estimación-estadística-de-la-función-de-supervivencia-el-estimador-de-kaplan-meier"><span class="header-section-number">5.3</span> Estimación estadística de la función de supervivencia: el estimador de Kaplan-Meier</a></li>
+  <li><a href="#prueba-de-hipótesis-log-rank-test" id="toc-prueba-de-hipótesis-log-rank-test" class="nav-link" data-scroll-target="#prueba-de-hipótesis-log-rank-test"><span class="header-section-number">5.4</span> Prueba de hipótesis: Log-rank test</a></li>
+  <li><a href="#estimación-estadística-de-la-función-de-riesgo-acumulado-el-estimador-de-aalen-nelson" id="toc-estimación-estadística-de-la-función-de-riesgo-acumulado-el-estimador-de-aalen-nelson" class="nav-link" data-scroll-target="#estimación-estadística-de-la-función-de-riesgo-acumulado-el-estimador-de-aalen-nelson"><span class="header-section-number">5.5</span> Estimación estadística de la función de riesgo acumulado: el estimador de Aalen Nelson</a></li>
+  <li><a href="#modelado-de-datos-de-supervivencia-el-modelo-de-riesgos-proporcionales-de-cox" id="toc-modelado-de-datos-de-supervivencia-el-modelo-de-riesgos-proporcionales-de-cox" class="nav-link" data-scroll-target="#modelado-de-datos-de-supervivencia-el-modelo-de-riesgos-proporcionales-de-cox"><span class="header-section-number">5.6</span> Modelado de datos de supervivencia: el modelo de riesgos proporcionales de Cox</a>
+  <ul class="collapse">
+  <li><a href="#ejemplo-modelo-de-cox-en-oncología-médica" id="toc-ejemplo-modelo-de-cox-en-oncología-médica" class="nav-link" data-scroll-target="#ejemplo-modelo-de-cox-en-oncología-médica"><span class="header-section-number">5.6.1</span> Ejemplo modelo de Cox en oncología médica</a></li>
+  <li><a href="#gráfico-de-incidencia-acumulada" id="toc-gráfico-de-incidencia-acumulada" class="nav-link" data-scroll-target="#gráfico-de-incidencia-acumulada"><span class="header-section-number">5.6.2</span> Gráfico de Incidencia Acumulada</a></li>
+  <li><a href="#interpretación-de-resultados" id="toc-interpretación-de-resultados" class="nav-link" data-scroll-target="#interpretación-de-resultados"><span class="header-section-number">5.6.3</span> Interpretación de Resultados</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">5.6.4</span> Conclusiones</a></li>
+  <li><a href="#verificación-del-supuesto-de-riesgos-proporcionales-rp" id="toc-verificación-del-supuesto-de-riesgos-proporcionales-rp" class="nav-link" data-scroll-target="#verificación-del-supuesto-de-riesgos-proporcionales-rp"><span class="header-section-number">5.6.5</span> Verificación del Supuesto de Riesgos Proporcionales (RP)</a></li>
+  <li><a href="#narrativo-para-publicación-científica" id="toc-narrativo-para-publicación-científica" class="nav-link" data-scroll-target="#narrativo-para-publicación-científica"><span class="header-section-number">5.6.6</span> Narrativo para publicación científica:</a></li>
+  <li><a href="#ejemplo-extendido" id="toc-ejemplo-extendido" class="nav-link" data-scroll-target="#ejemplo-extendido"><span class="header-section-number">5.6.7</span> Ejemplo extendido:</a></li>
+  </ul></li>
+  <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">Referencias</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">TEMA 5: ANÁLISIS DE SUPERVIVENCIA</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Cuando hayamos terminado este tema, seremos capaces de:</p>
+<pre><code>-   Comprender los conceptos básicos del análisis de supervivencia.
+-   Aprender a utilizar R para realizar análisis de supervivencia.
+-   Interpretar los resultados de los análisis de supervivencia.
+-   Aplicar técnicas de análisis de supervivencia en estudios médicos.
+-   Familiarizarse con la visualización de datos de supervivencia utilizando gráficos de Kaplan-Meier.
+-   Entender la importancia del análisis de supervivencia en la investigación médica y epidemiológica.</code></pre>
+<section id="introducción" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="introducción"><span class="header-section-number">5.1</span> Introducción</h2>
+<p>Para la última publicación del año, me gustaría presentar un método estadístico bastante desconocido (aunque importante): el <strong>análisis de supervivencia</strong>. Aunque el análisis de supervivencia es una rama de la estadística, no suele abordarse en los cursos de introducción a la estadística y es bastante desconocido para el público general. Se enseña principalmente en cursos de bioestadística o en programas de estudio de estadística avanzada.</p>
+<p>En la práctica, el análisis de supervivencia casi siempre se realiza con un programa estadístico y nunca a mano. Sin embargo, como con cualquier concepto estadístico, la computación al menos una vez a mano permite entender realmente los conceptos y lo que estos programas hacen en realidad. Por esta razón, se mostrará un breve ejemplo de cómo realizar un análisis de supervivencia básico a mano.</p>
+<section id="qué-es-el-análisis-de-supervivencia" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="qué-es-el-análisis-de-supervivencia"><span class="header-section-number">5.1.1</span> ¿Qué es el análisis de supervivencia?</h3>
+<p>El <strong>análisis de supervivencia</strong> (también llamado análisis de tiempo hasta el evento o análisis de duración) es una rama de la estadística que tiene como objetivo <strong>analizar la duración del tiempo desde un origen temporal bien definido hasta que ocurren uno o más eventos</strong>, llamados tiempos de supervivencia o tiempos de duración. En otras palabras, en el análisis de supervivencia, nos interesa un evento determinado y queremos <strong>analizar el tiempo hasta que ese evento ocurre</strong>.</p>
+<p>Si bien el evento de interés suele ser la muerte (en este caso, estudiamos el tiempo hasta la muerte para pacientes con una enfermedad específica) o la recurrencia (en este caso, estudiamos el tiempo hasta la recaída de una enfermedad determinada), no se limita al campo de la medicina o la epidemiología. De hecho, se puede utilizar en muchos ámbitos. El evento de interés no tiene por qué ser la muerte o la aparición de una enfermedad, pero en todas las situaciones <strong>estamos interesados en analizar el tiempo hasta que ocurre un evento específico</strong>.</p>
+<p>Los datos de supervivencia, también conocidos como datos de tiempo hasta el evento, requieren un conjunto especial de métodos estadísticos por tres razones principales:</p>
+<ol type="1">
+<li><strong>Los tiempos de duración</strong> son <strong>siempre positivos</strong>: el tiempo hasta que ocurre un evento de interés no puede ser menor que 0. Además, la distribución de los tiempos de supervivencia tiene un sesgo a la derecha.</li>
+<li><strong>Se utilizan diferentes medidas</strong> de interés dependiendo de la pregunta de investigación, el contexto, etc. Por ejemplo, podríamos estar interesados en: La <strong>probabilidad</strong> de que un paciente con cáncer sobreviva más de 5 años después del diagnóstico o el <strong>tiempo de espera</strong> hasta la próxima recidiva de cáncer.</li>
+<li>La <strong>censura</strong> definida como la falta de observación del evento de interés para algunos individuos durante el período de estudio. Cuando el evento ocurrió antes del final del estudio, el tiempo de supervivencia se conoce, sin embargo, a veces, el evento aún no se ha observado al final del estudio. Supongamos que estudiamos el tiempo hasta la muerte de pacientes con cáncer de mama. Afortunadamente, algunas pacientes no morirán antes de que finalice el estudio. Pero también puede ocurrir que el paciente se pierda durante el seguimiento (por ejemplo, porque se muda a otra ciudad o país) o que el paciente decida abandonar el estudio. En estos casos, no conocemos su tiempo exacto de supervivencia, pero sabemos que sobrevivieron al menos hasta el final del estudio o hasta el momento en que se perdieron o abandonaron el estudio. En todas estas situaciones, su tiempo de supervivencia no puede observarse porque el evento no se observa durante la duración del estudio.</li>
+</ol>
+<p>La censura hace que se requieren métodos estadísticos específicos para tener en cuenta el hecho de que la duración <em>exacta</em> de la supervivencia de algunos pacientes falta. Se sabe que sobrevivieron una cierta cantidad de tiempo (hasta el final del estudio o hasta el momento del abandono), pero se desconoce su tiempo exacto de supervivencia.</p>
+<p>Para tu información, existen tres tipos de censura:</p>
+<ol type="1">
+<li>Censura a la derecha (la más frecuente),</li>
+<li>Censura a la izquierda (la menos frecuente) y</li>
+<li>Censura por intervalo.</li>
+</ol>
+<p>Cuando el evento aún no se ha observado al final del estudio (es decir, el tiempo de supervivencia es mayor que la duración observada), esto se conoce como censura a la derecha. La censura a la izquierda ocurre si un participante entra en el estudio cuando el evento de interés ya ha ocurrido antes de su entrada, pero no sabemos exactamente cuándo. La censura por intervalo implica que el evento ocurrió dentro de un intervalo de tiempo (entre dos fechas conocidas, dos visitas, etc.); no se conoce el momento exacto de la ocurrencia. El objetivo es, por supuesto, analizar todos los datos disponibles, incluida la información sobre los pacientes censurados.</p>
+<p>El objetivo del análisis de supervivencia es, por tanto, modelar y describir los datos de tiempo hasta el evento de una manera apropiada, teniendo en cuenta las particularidades de este tipo de datos.</p>
+</section>
+</section>
+<section id="funciones-comunes-en-el-análisis-de-supervivencia" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="funciones-comunes-en-el-análisis-de-supervivencia"><span class="header-section-number">5.2</span> Funciones comunes en el análisis de supervivencia</h2>
+<p>No vamos a entrar en demasiados detalles, pero es importante sentar las bases con las funciones más comunes en el análisis de supervivencia.</p>
+<p>Sea <span class="math inline">\(T\)</span> una variable aleatoria continua no negativa, que representa el tiempo hasta el evento de interés. Consideramos las siguientes funciones:</p>
+<ol type="1">
+<li>Función de supervivencia</li>
+<li>Función de riesgo acumulado</li>
+<li>Función de riesgo</li>
+</ol>
+<section id="función-de-supervivencia-survival-function" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="función-de-supervivencia-survival-function"><span class="header-section-number">5.2.1</span> Función de supervivencia (survival function)</h3>
+<p>La más común es la función de supervivencia.</p>
+<p>Sea <span class="math inline">\(T\)</span> una variable aleatoria continua no negativa, que representa el tiempo hasta el evento de interés. La función de supervivencia <span class="math inline">\(S(t)\)</span> es la probabilidad de que un individuo elegido al azar siga en riesgo en el tiempo <span class="math inline">\(t\)</span>, donde <span class="math inline">\(0 \le t \le +\infty\)</span>. Para cada <span class="math inline">\(t\)</span>, viene dada por</p>
+<p><span class="math display">\[
+\begin{align*}
+S(t) &amp;= P(T &gt; t)\\
+&amp;= 1 - P(T \le t)\\
+&amp;= 1 - F(t)\\
+&amp;= 1 - \int^t_0 f(u)\text{d}u,
+\end{align*}
+\]</span></p>
+<p>donde <span class="math inline">\(f(\cdot)\)</span> y <span class="math inline">\(F(\cdot)\)</span> son las funciones de densidad y de distribución acumulada de <span class="math inline">\(T\)</span>, respectivamente.</p>
+<p><span class="math inline">\(S(t)\)</span> representa, para cada tiempo <span class="math inline">\(t\)</span>, la probabilidad de que el tiempo hasta el evento sea mayor que este tiempo <span class="math inline">\(t\)</span>. En otras palabras, modela la probabilidad de que el evento de interés ocurra <strong>después</strong> de <span class="math inline">\(t\)</span>. En el contexto de la Bioestadística, la probabilidad de que un paciente seleccionado al azar sobreviva más allá del tiempo <span class="math inline">\(t\)</span> o la proporción de pacientes que siguen vivos después del tiempo <span class="math inline">\(t\)</span>,</p>
+<p>La función de supervivencia <span class="math inline">\(S(t)\)</span> es:</p>
+<ul>
+<li>una función decreciente,</li>
+<li>que toma valores en <span class="math inline">\([0, 1]\)</span> (ya que es una probabilidad), y</li>
+<li>es igual a 1 en <span class="math inline">\(t = 0\)</span> (es decir, <span class="math inline">\(S(0) = 1\)</span>) y 0 en <span class="math inline">\(t = \infty\)</span> (es decir, <span class="math inline">\(S(\infty) = 0\)</span>).</li>
+</ul>
+<p>Visualmente tenemos:</p>
+<p>La curva muestra la proporción de individuos (o unidades experimentales) que, a medida que pasa el tiempo, no han experimentado el evento de interés. Con el paso del tiempo, ocurren eventos, por lo que la proporción de quienes no han experimentado el evento disminuye.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="función-de-riesgo-acumulado-cummlative-hazard-function" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="función-de-riesgo-acumulado-cummlative-hazard-function"><span class="header-section-number">5.2.2</span> Función de riesgo acumulado (cummlative hazard function)</h3>
+<p>La función de riesgo acumulado, que es el riesgo total experimentado hasta el tiempo <span class="math inline">\(t\)</span>, se define como:</p>
+<p><span class="math display">\[H(t) = -\log\left(S(t)\right)\]</span></p>
+<p>y tiene las siguientes propiedades:</p>
+<ul>
+<li>función creciente,</li>
+<li>toma valores en <span class="math inline">\([0, +\infty]\)</span>, y</li>
+<li><span class="math inline">\(S(t) = \exp(-H(t))\)</span>.</li>
+</ul>
+</section>
+<section id="función-de-riesgo-hazard-function" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="función-de-riesgo-hazard-function"><span class="header-section-number">5.2.3</span> Función de riesgo (Hazard function)</h3>
+<p>La función de riesgo <span class="math inline">\(h(t)\)</span>, o tasa de riesgo, define la tasa instantánea de eventos en el tiempo <span class="math inline">\(t\)</span> para un individuo que todavía está en riesgo en ese momento. Se puede obtener mediante</p>
+<p><span class="math display">\[
+\begin{align*}
+h(t) &amp;= \lim_{\Delta t \rightarrow 0} \frac{P(t \le T &lt; t + \Delta t | T \ge t)}{\Delta t}\\
+&amp;= \frac{d}{dt} H(t)\\
+&amp;= \frac{f(t)}{S(t)}.
+\end{align*}
+\]</span> y tiene las siguientes propiedades:</p>
+<ul>
+<li>función positiva (no necesariamente creciente o decreciente)</li>
+<li>la función de riesgo <span class="math inline">\(h(t)\)</span> puede tener muchas formas diferentes y, por lo tanto, es una herramienta útil para resumir datos de supervivencia.</li>
+</ul>
+<p>En el contexto de la investigación del cáncer, cuando la muerte es el evento de interés, <span class="math inline">\(h(t)\)</span> mide el riesgo instantáneo de morir justo después del tiempo <span class="math inline">\(t\)</span>, dado que el individuo está vivo en el tiempo <span class="math inline">\(t\)</span>.</p>
+<p>Para vincular la tasa de riesgo con la función de supervivencia, la curva de supervivencia representa las tasas de riesgo. Una pendiente más pronunciada indica una tasa de riesgo más alta porque los eventos ocurren con más frecuencia, reduciendo la proporción de individuos que no han experimentado el evento a un ritmo más rápido. Por el contrario, una pendiente gradual y más plana indica una tasa de riesgo más baja porque los eventos ocurren con menos frecuencia, reduciendo la proporción de individuos que no han experimentado el evento a un ritmo más lento. Más formalmente:</p>
+<p><span class="math display">\[S(t) = \exp\left(-\int^t_0 h(u) \text{d}u\right).\]</span> Ten en cuenta que, a diferencia de la función de supervivencia que se centra en no tener un evento, la función de riesgo se centra en que el evento ocurra.</p>
+</section>
+</section>
+<section id="estimación-estadística-de-la-función-de-supervivencia-el-estimador-de-kaplan-meier" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="estimación-estadística-de-la-función-de-supervivencia-el-estimador-de-kaplan-meier"><span class="header-section-number">5.3</span> Estimación estadística de la función de supervivencia: el estimador de Kaplan-Meier</h2>
+<p>Para estimar la función de supervivencia, necesitamos usar un estimador que sea capaz de manejar la censura. El más común es el <strong>estimador no paramétrico de Kaplan-Meier</strong>, también conocido a veces como el estimador de producto-límite, o más simplemente, el estimador K-M <span class="citation" data-cites="kaplan1958">[<a href="#ref-kaplan1958" role="doc-biblioref">1</a>]</span>.</p>
+<p>Las ventajas del estimador de Kaplan-Meier son que:</p>
+<ul>
+<li>es simple y directo de usar e interpretar.</li>
+<li>es un estimador no paramétrico, por lo que construye una curva de supervivencia a partir de los datos y no se hacen suposiciones sobre la forma de la distribución subyacente.</li>
+<li>proporciona una representación gráfica de la(s) función(es) de supervivencia, útil para fines ilustrativos.</li>
+</ul>
+<p>El principio detrás de este estimador es que sobrevivir más allá del tiempo <span class="math inline">\(t_i\)</span> implica sobrevivir más allá del tiempo <span class="math inline">\(t_{i-1}\)</span> y sobrevivir en el tiempo <span class="math inline">\(t_i\)</span>. Ten en cuenta que una suposición importante para que la estimación sea válida es que <strong>la censura es independiente de la ocurrencia de eventos</strong>. Decimos que la censura no es informativa, es decir, los sujetos censurados tienen las mismas perspectivas de supervivencia que los sujetos que no están censurados y que continúan siendo seguidos.</p>
+<p>Para entender cómo funciona, primero vamos a estimarlo a mano con el siguiente conjunto de datos. Ten en cuenta que en el análisis de supervivencia, la precisión de los estimadores y la potencia de las pruebas no depende del número de pacientes, sino del número de eventos. Por lo tanto, es mejor tener muchas observaciones en las que el evento ocurra para que los análisis sean efectivos. Aquí tenemos 10 sujetos con sus tiempos de supervivencia (en años) y su estado de evento (0 = censurado, 1 = evento ocurrido):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ulbehvtgjt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ulbehvtgjt table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ulbehvtgjt thead, #ulbehvtgjt tbody, #ulbehvtgjt tfoot, #ulbehvtgjt tr, #ulbehvtgjt td, #ulbehvtgjt th {
+  border-style: none;
+}
+
+#ulbehvtgjt p {
+  margin: 0;
+  padding: 0;
+}
+
+#ulbehvtgjt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ulbehvtgjt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ulbehvtgjt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ulbehvtgjt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ulbehvtgjt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ulbehvtgjt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ulbehvtgjt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ulbehvtgjt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ulbehvtgjt .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ulbehvtgjt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ulbehvtgjt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ulbehvtgjt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ulbehvtgjt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ulbehvtgjt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ulbehvtgjt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbehvtgjt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ulbehvtgjt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ulbehvtgjt .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ulbehvtgjt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbehvtgjt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ulbehvtgjt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbehvtgjt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ulbehvtgjt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbehvtgjt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ulbehvtgjt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ulbehvtgjt .gt_left {
+  text-align: left;
+}
+
+#ulbehvtgjt .gt_center {
+  text-align: center;
+}
+
+#ulbehvtgjt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ulbehvtgjt .gt_font_normal {
+  font-weight: normal;
+}
+
+#ulbehvtgjt .gt_font_bold {
+  font-weight: bold;
+}
+
+#ulbehvtgjt .gt_font_italic {
+  font-style: italic;
+}
+
+#ulbehvtgjt .gt_super {
+  font-size: 65%;
+}
+
+#ulbehvtgjt .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ulbehvtgjt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ulbehvtgjt .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ulbehvtgjt .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ulbehvtgjt .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ulbehvtgjt .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ulbehvtgjt .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ulbehvtgjt .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ulbehvtgjt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="subject" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">subject</th>
+<th id="time" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">time</th>
+<th id="event" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">event</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="subject">1</td>
+<td class="gt_row gt_right" headers="time">3</td>
+<td class="gt_row gt_right" headers="event">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="subject">2</td>
+<td class="gt_row gt_right" headers="time">5</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="subject">3</td>
+<td class="gt_row gt_right" headers="time">7</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="subject">4</td>
+<td class="gt_row gt_right" headers="time">2</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="subject">5</td>
+<td class="gt_row gt_right" headers="time">18</td>
+<td class="gt_row gt_right" headers="event">0</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="subject">6</td>
+<td class="gt_row gt_right" headers="time">16</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="subject">7</td>
+<td class="gt_row gt_right" headers="time">2</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="subject">8</td>
+<td class="gt_row gt_right" headers="time">9</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="subject">9</td>
+<td class="gt_row gt_right" headers="time">16</td>
+<td class="gt_row gt_right" headers="event">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="subject">10</td>
+<td class="gt_row gt_right" headers="time">5</td>
+<td class="gt_row gt_right" headers="event">0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>donde: - <code>subject</code> es el identificador del individuo - <code>time</code> es el tiempo hasta el evento (en años). Ten en cuenta que la variable <code>time</code> puede expresarse en otras unidades, como segundos, días, semanas, meses, etc. - <code>event</code> es el estado del evento (0 = censurado, 1 = evento ocurrido)</p>
+<p>Recuerda que para cada sujeto, necesitamos conocer al menos 2 datos:</p>
+<ol type="1">
+<li>el tiempo hasta el evento de interés o el tiempo hasta la censura, y</li>
+<li>si hemos observado el evento de interés o si hemos observado censura.</li>
+</ol>
+<p>Primero necesitamos contar el número de tiempos de evento distintos. Ignorando las observaciones censuradas, tenemos 5 tiempos de evento distintos:</p>
+<p>2, 5, 7, 9, 16</p>
+<p>La forma más fácil de hacer el cálculo a mano es rellenando la siguiente tabla (una tabla con 5 filas ya que hay 5 tiempos de evento distintos):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>Rellenamos las columnas una por una:</p>
+<ul>
+<li><span class="math inline">\(y_{(j)}\)</span> = los tiempos de evento distintos y ordenados:</li>
+</ul>
+<p>2, 5, 7, 9, 16</p>
+<p>Así que la tabla queda:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(d_{(j)}\)</span> = el número de observaciones para cada tiempo de evento distinto. Para esto, la frecuencia de cada tiempo de evento distinto es útil y la tabla queda:</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(R\_{(j)}\)</span> = el número restante de individuos en riesgo. Para esto, la distribución del tiempo (censurado y no censurado) es útil. Vemos que:</li>
+<li>Al principio hay 10 sujetos</li>
+<li>Justo antes del tiempo <span class="math inline">\(t = 5\)</span>, quedan 7 sujetos (10 sujetos - 2 que tuvieron el evento - 1 que está censurado)</li>
+<li>Justo antes del tiempo <span class="math inline">\(t = 7\)</span>, quedan 5 sujetos (= 10 - 2 - 1 - 2)</li>
+<li>Justo antes del tiempo <span class="math inline">\(t = 9\)</span>, quedan 4 sujetos (= 10 - 2 - 1 - 2 - 1)</li>
+<li>Justo antes del tiempo <span class="math inline">\(t = 16\)</span>, quedan 3 sujetos (= 10 - 2 - 1 - 2 - 1 - 1)</li>
+</ul>
+<p>La tabla queda:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span> es de cálculo sencillo, así que la tabla queda:</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">0.800</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">0.857</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.800</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.750</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.333</td>
+</tr>
+</tbody>
+</table>
+<p>El estimador de Kaplan-Meier es: <span class="math display">\[\hat{S}_{KM}(t) = \prod_{j:y_{(j)} \le t} \left(1 - \frac{d_{(j)}}{R_{(j)}} \right)\]</span> que es el producto acumulado de los términos en la última columna para todos los tiempos de evento distintos <span class="math inline">\(y_{(j)}\)</span> menores o iguales a <span class="math inline">\(t\)</span>. Para cada <span class="math inline">\(j\)</span>, tomamos el producto acumulado:</p>
+<ul>
+<li><span class="math inline">\(j_1 = 0.8\)</span></li>
+<li><span class="math inline">\(j_2 = 0.8 \cdot 0.857 = 0.6856\)</span></li>
+<li><span class="math inline">\(j_3 = 0.6856 \cdot 0.8 = 0.54848\)</span></li>
+<li><span class="math inline">\(j_4 = 0.54848 \cdot 0.75 = 0.41136\)</span></li>
+<li><span class="math inline">\(j_5 = 0.41136 \cdot 0.333 = 0.1369829\)</span></li>
+</ul>
+<p>Así que finalmente, tenemos las probabilidades de supervivencia (redondeadas a 3 decimales):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1 - \frac{d_{(j)}}{R_{(j)}}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\hat{S}_{KM}(t)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.800</td>
+<td style="text-align: center;">0.800</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.857</td>
+<td style="text-align: center;">0.686</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.800</td>
+<td style="text-align: center;">0.548</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.750</td>
+<td style="text-align: center;">0.411</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.333</td>
+<td style="text-align: center;">0.137</td>
+</tr>
+</tbody>
+</table>
+<p>Ahora podemos representar gráficamente el estimador de Kaplan-Meier con las funciones <code>survfit()</code> y <code>Surv()</code>:</p>
+<p>Observa que la función <code>Surv()</code> acepta dos argumentos: 1. la variable <code>time</code>, y 2. la variable <code>event</code>.</p>
+<p>El <code>~ 1</code> en la función <code>survfit()</code> indica que estimamos el Kaplan-Meier sin ninguna agrupación. Finalmente, mostramos los resultados y dibujamos el gráfico de Kaplan-Meier en R:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KM</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, event) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dat)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># resultados</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(km)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = Surv(time, event) ~ 1, data = dat)
+
+ time n.risk n.event survival std.err lower 95% CI upper 95% CI
+    2     10       2    0.800   0.126       0.5868        1.000
+    5      7       1    0.686   0.151       0.4447        1.000
+    7      5       1    0.549   0.172       0.2963        1.000
+    9      4       1    0.411   0.176       0.1782        0.950
+   16      3       2    0.137   0.126       0.0225        0.834</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(km,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Tiempo"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Probabilidad de supervivencia"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">conf.int =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las probabilidades de supervivencia se pueden encontrar en la columna <code>survival</code>. Observa que los resultados a mano y en R son similares (cualquier diferencia con los resultados a mano se debe al redondeo).</p>
+<p>Alternativamente, podemos usar la función <code>ggsurvplot()</code> del paquete <code>{survminer}</code>:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("survminer")</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survminer)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(km,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Nota: las cruces en la curva de supervivencia denotan las observaciones censuradas.</p>
+<p>La ventaja de la función <code>ggsurvplot()</code> es que es fácil dibujar la mediana de supervivencia directamente en el gráfico. Se prefiere la mediana a la media en el análisis de supervivencia porque las funciones de supervivencia a menudo están sesgadas a la derecha. La media suele estar influenciada por valores atípicos, mientras que la mediana no.</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico con mediana</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(km,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">conf.int =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">surv.median.line =</span> <span class="st">"hv"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ten en cuenta que si la curva de supervivencia no cruza el 50% es porque la supervivencia es mayor al 50% en el último punto temporal, entonces la mediana de supervivencia no se puede calcular y simplemente está indefinida.</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(km)<span class="sc">$</span>table[<span class="st">"median"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>median 
+     9 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># o más simple</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>km</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = Surv(time, event) ~ 1, data = dat)
+
+      n events median 0.95LCL 0.95UCL
+[1,] 10      7      9       5      NA</code></pre>
+</div>
+</div>
+<p>Supongamos que el evento de interés es la muerte:</p>
+<ul>
+<li>En el tiempo cero, la probabilidad de supervivencia es 1 (el 100% de los sujetos están vivos).</li>
+<li>La mediana indica que el tiempo mediano de supervivencia es de 9 años. Ten en cuenta que la mediana de supervivencia se expresa en la misma unidad que la variable <code>time</code> en el conjunto de datos inicial. Así, si la unidad de tiempo fueran meses, el tiempo mediano de supervivencia sería de 9 meses. Este es el tiempo en el que la supervivencia <span class="math inline">\(S(t)\)</span> es del 50%. En otras palabras, es el tiempo después del cual se espera que la mitad de los sujetos hayan muerto.</li>
+<li>Del gráfico, también vemos que <span class="math inline">\(S(5) = P(T &gt; 5 \text{ años}) =\)</span> Probabilidad de supervivencia de más de 5 años para estos sujetos = 75%. Esto significa que el 75% de todos los sujetos sobreviven más de 5 años, y que el 25% de todos los sujetos mueren en los primeros 5 años.</li>
+</ul>
+<p>Para ser exhaustivos, hagamos otro ejemplo con un conjunto de datos mucho más grande; el conjunto de datos <code>tongue</code> del paquete <code>{KMsurv}</code>.Puedes encontrar más información sobre el conjunto de datos en <a href="https://cran.r-project.org/web/packages/KMsurv/">CRAN</a> o con <code>?tongue</code>.</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cargar datos</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(KMsurv)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(tongue)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># previsualizar datos</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tongue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  type time delta
+1    1    1     1
+2    1    3     1
+3    1    3     1
+4    1    4     1
+5    1   10     1
+6    1   13     1</code></pre>
+</div>
+</div>
+<ul>
+<li><code>type</code> es el perfil de ADN del tumor (1 = tumor aneuploide, 2 = tumor diploide)</li>
+<li><code>time</code> es el tiempo hasta la muerte o el tiempo en estudio (en semanas)</li>
+<li><code>delta</code> es el indicador de muerte (0 = vivo, 1 = muerto)</li>
+</ul>
+<p>Para este ejemplo, nos centramos en el tipo aneuploide:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>aneuploid <span class="ot">&lt;-</span> <span class="fu">subset</span>(tongue, type <span class="sc">==</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Ahora podemos graficar la función de supervivencia estimada y estimar el tiempo mediano hasta la muerte. Dado que es un estimador, también podemos construir un intervalo de confianza para la supervivencia estimada en cada tiempo <span class="math inline">\(t\)</span> y para el tiempo mediano de supervivencia estimado.</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># resultados</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, delta) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> aneuploid,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">conf.type =</span> <span class="st">"log-log"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call: survfit(formula = Surv(time, delta) ~ 1, data = aneuploid, conf.type = "log-log")
+
+      n events median 0.95LCL 0.95UCL
+[1,] 52     31     93      65     157</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(fit,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">surv.median.line =</span> <span class="st">"hv"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El tiempo mediano de supervivencia se estima en 93 semanas, con un intervalo de confianza del 95% entre 65 y 157 semanas.</p>
+<p>Las curvas de Kaplan-Meier pueden verse como estadísticas descriptivas para datos de supervivencia. Ahora nos centramos en la segunda rama de la estadística, la prueba de hipótesis, que permite sacar conclusiones sobre la población basándose en una muestra.</p>
+</section>
+<section id="prueba-de-hipótesis-log-rank-test" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="prueba-de-hipótesis-log-rank-test"><span class="header-section-number">5.4</span> Prueba de hipótesis: Log-rank test</h2>
+<p>La prueba de hipótesis en el campo del análisis de supervivencia se ocupa principalmente de:</p>
+<ul>
+<li>La función de riesgo de <strong>una población</strong>: en este caso, probamos si una muestra censurada proviene de una población con una función de riesgo conocida <span class="math inline">\(h_0(t)\)</span>. Por ejemplo, podríamos estar interesados en comparar la supervivencia en una muestra de pacientes con la supervivencia en la población general (derivada de las tablas de vida).</li>
+<li>La comparación de la función de riesgo de <strong>dos o más poblaciones</strong>: en este caso, nos interesa evaluar si existen diferencias en la supervivencia entre diferentes grupos de sujetos. Por ejemplo nos interesa comparar la supervivencia de pacientes con cáncer de colon hombres y mujeres o más grupos (la supervivencia de pacientes con cáncer de melanoma según sus tratamientos con tratamientos A, B y C, por ejemplo).</li>
+</ul>
+<p>El test <strong>Log-rank</strong> (también conocido como prueba de Mantel-Cox) es la prueba de hipótesis más común para comparar la supervivencia entre dos grupos <span class="citation" data-cites="mantel66">[<a href="#ref-mantel66" role="doc-biblioref">2</a>]</span>. La intuición detrás de la prueba es que si los dos grupos tienen tasas de riesgo diferentes, las dos curvas de supervivencia (y por lo tanto sus pendientes) diferirán. Más precisamente, la prueba de log-rank compara el número observado de eventos en cada grupo con lo que se esperaría si las curvas de supervivencia fueran idénticas (es decir, si la hipótesis nula fuera cierta). Ten en cuenta que, al igual que el estimador de Kaplan-Meier, la prueba de log-rank es una prueba no paramétrica, que no hace suposiciones sobre las distribuciones de supervivencia.</p>
+<p>Para este ejemplo, considera el siguiente conjunto de datos:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   patient group time event
+1        1     1  4.1     1
+2        2     1  7.8     0
+3        3     1 10.0     1
+4        4     1 10.0     1
+5        5     1 12.3     0
+6        6     1 17.2     1
+7        7     2  9.7     1
+8        8     2 10.0     1
+9        9     2 11.1     0
+10      10     2 13.1     0
+11      11     2 19.7     1
+12      12     2 24.1     0</code></pre>
+</div>
+</div>
+<p>donde: - <code>patient</code> es el identificador del paciente - <code>group</code> es el grupo (grupo 1 o 2) - <code>time</code> es el tiempo hasta la muerte (en años) - <code>event</code> es el estado del evento (0 = censurado, 1 = muerte) Supongamos que estamos interesados en comparar el grupo 1 y 2 en términos de supervivencia, es decir, comparamos las curvas de supervivencia entre los 2 grupos:</p>
+<ul>
+<li><span class="math inline">\(H_0 : S_1(t) = S_2(t)\)</span> para todo <span class="math inline">\(t\)</span></li>
+<li><span class="math inline">\(H_1 : S_1(t) \ne S_2(t)\)</span> para algún <span class="math inline">\(t\)</span></li>
+</ul>
+<p>Es una prueba estadística, por lo que si el valor <span class="math inline">\(p\)</span> &lt; <span class="math inline">\(\alpha\)</span> (generalmente 0.05), rechazamos la hipótesis nula y concluimos que la supervivencia (o el tiempo hasta el evento) es significativamente diferente entre los dos grupos considerados.</p>
+<p>Para realizar la prueba de log-rank, el siguiente estadístico de prueba será útil:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+U &amp;=&amp; \sum_{j=1}^r w(y_{(j)})\left(O_j - E_j\right) \\
+&amp;=&amp; \sum_{j=1}^r w(y_{(j)})\left( d_{(j)1} - \frac{d_{(j)}R_{(j)1}}{R_{(j)}}\right)
+\end{eqnarray}
+\]</span></p>
+<p>con <span class="math inline">\(U^{obs} = \frac{U}{\sqrt{Var(U)}} \sim N(0,1)\)</span> y este es el caso para muestras grandes. El ejemplo descrito aquí no cumple esta condición, pero aun así lo mostramos como ilustración.</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Var(U) &amp;=&amp; \sum_{j=1}^r w^2(y_{(j)}) \frac{N_{(j)}}{ D_{(j)}  }\\
+&amp;=&amp; \sum_{j=1}^r w^2(y_{(j)}) \frac{ d_{(j)} \frac{R_{(j)1}}{R_{(j)} } \left( 1 - \frac{R_{(j)1}}{R_{(j)} } \right) \left( R_{(j)} - d_{(j)}\right) }{ R_{(j)} - 1  }
+\end{eqnarray}
+\]</span> Al igual que con el estimador de Kaplan-Meier a mano, es mejor rellenar una tabla para la prueba de log-rank a mano.</p>
+<p>Presentemos la tabla final y comentemos a continuación cómo rellenarla, columna por columna:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(j\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(y_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)1}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)1}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)2}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)2}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(d_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(R_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(E_{j}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(O_{j}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(O_{j} - E_{j}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(N_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(D_{(j)}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(N_{(j)}/D_{(j)}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">4.1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">2.75</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">9.7</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">0.4</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">-0.4</td>
+<td style="text-align: center;">2.16</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">0.24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1.333</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.667</td>
+<td style="text-align: center;">4.44</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.555</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">17.2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.333</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.667</td>
+<td style="text-align: center;">0.44</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.22</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">19.7</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.00</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(Total\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">2.566</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1.433</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">1.265</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Columna <span class="math inline">\(j\)</span></strong> es el número de tiempos de evento distintos. Vemos que hay 5 (ignorando las observaciones censuradas), así que escribimos del 1 al 5 en la tabla. <strong>Columna <span class="math inline">\(y_{(j)}\)</span></strong> son los tiempos de evento distintos y ordenados: 4.1, 9.7, 10, 17.2, 19.7 <strong>Columna <span class="math inline">\(d_{(j)1}\)</span></strong> es el número de observaciones para cada tiempo de evento distinto, para el grupo 1. Cuando no hay ningún evento, simplemente escribimos 0 en la tabla. <strong>Columna <span class="math inline">\(R_{(j)1}\)</span></strong> es el número restante de pacientes en riesgo, para el grupo 1. Para esto, la distribución del tiempo (censurado y no censurado, para el grupo 1) es útil. Vemos que: - Al principio, hay 6 pacientes. - Antes del tiempo 9.7, quedan 4 pacientes (6 - 1 que tuvo el evento en el tiempo 4.1 - 1 que fue censurado en el tiempo 7.8). - Antes del tiempo 10, quedan 4 pacientes (6 - 2). - Antes del tiempo 17.2, queda 1 paciente (6 - 5). - Antes del tiempo 19.7, quedan 0 pacientes (6 - 6). Las <strong>columnas <span class="math inline">\(d_{(j)2}\)</span> y <span class="math inline">\(R_{(j)2}\)</span></strong> siguen el mismo principio, pero esta vez para el grupo 2. Las <strong>columnas <span class="math inline">\(d_{(j)}\)</span> y <span class="math inline">\(R_{(j)}\)</span></strong> también siguen el mismo principio, pero esta vez considerando ambos grupos. La <strong>columna <span class="math inline">\(E_{j}\)</span></strong> es el número esperado de eventos en el primer grupo asumiendo que <span class="math inline">\(h_1 \equiv h_2\)</span>. Se obtiene de la siguiente manera:</p>
+<p><span class="math display">\[ E_{j} = \frac{d_{(j)}R_{(j)1}}{R_{(j)}}\]</span></p>
+<p>La <strong>columna <span class="math inline">\(O_{j}\)</span></strong> es el número observado de eventos en el primer grupo, por lo que es igual a la columna <span class="math inline">\(d_{(j)1}\)</span>. La <strong>columna <span class="math inline">\(O_{j} - E_{j}\)</span></strong> es sencilla. La <strong>columna <span class="math inline">\(N_{(j)}\)</span></strong> se define de la siguiente manera:</p>
+<p><span class="math display">\[N_{(j)} = d_{(j)} \frac{R_{(j)1}}{R_{(j)} } \left( 1 - \frac{R_{(j)1}}{R_{(j)} } \right) \left( R_{(j)} - d_{(j)}\right)\]</span></p>
+<p>La <strong>columna <span class="math inline">\(D_{(j)}\)</span></strong> es <span class="math inline">\(R_{(j)} - 1\)</span>. La <strong>columna <span class="math inline">\(N_{(j)}/D_{(j)}\)</span></strong> es sencilla.</p>
+<p>Dado que <span class="math inline">\(w(y_{(j)}) = w^2(y_{(j)}) = 1\)</span> para una prueba de log-rank, tenemos</p>
+<p><span class="math display">\[ U^{obs} = \frac{U}{\sqrt{Var(U)}} = \frac{1.434}{\sqrt{1.265}} = 1.275.\]</span></p>
+<p>Rechazamos <span class="math inline">\(H_0\)</span> si <span class="math inline">\(|U^{obs}|&gt;z_{1-\alpha/2}\)</span>, así que a un nivel de significancia del 5% rechazamos <span class="math inline">\(H_0\)</span> si <span class="math inline">\(|U^{obs}|&gt;z_{0.975}=1.96\)</span>.</p>
+<p>Tenemos <span class="math inline">\(|U^{obs}| = 1.275 &lt; z_{0.975}=1.96\)</span>. Por lo tanto, a un nivel de significancia del 5% no rechazamos <span class="math inline">\(H_0\)</span>. Esto significa que, basándonos en los datos, no podemos concluir que la supervivencia sea diferente entre los dos grupos (lo que es equivalente a decir que no rechazamos la hipótesis de que la supervivencia es igual entre los dos grupos).</p>
+<p>Si te interesa calcular el valor <span class="math inline">\(p\)</span>:</p>
+<p>valor <span class="math inline">\(p\)</span> <span class="math inline">\(= 2\times P(Z&gt;1.275) = 2 \times 0.101 = 0.202 &gt; 0.05\)</span>.</p>
+<p>En R ahora comparamos nuestros resultados con la función <code>survdiff()</code>:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">6</span>)),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">time =</span> <span class="fu">c</span>(<span class="fl">4.1</span>, <span class="fl">7.8</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="fl">12.3</span>, <span class="fl">17.2</span>, <span class="fl">9.7</span>, <span class="dv">10</span>, <span class="fl">11.1</span>, <span class="fl">13.1</span>, <span class="fl">19.7</span>, <span class="fl">24.1</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">event =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>dat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   group time event
+1      1  4.1     1
+2      1  7.8     0
+3      1 10.0     1
+4      1 10.0     1
+5      1 12.3     0
+6      1 17.2     1
+7      2  9.7     1
+8      2 10.0     1
+9      2 11.1     0
+10     2 13.1     0
+11     2 19.7     1
+12     2 24.1     0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">survdiff</span>(<span class="fu">Surv</span>(time, event) <span class="sc">~</span> group,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> dat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+survdiff(formula = Surv(time, event) ~ group, data = dat)
+
+        N Observed Expected (O-E)^2/E (O-E)^2/V
+group=1 6        4     2.57     0.800      1.62
+group=2 6        3     4.43     0.463      1.62
+
+ Chisq= 1.6  on 1 degrees of freedom, p= 0.2 </code></pre>
+</div>
+</div>
+<p>Alternativamente, podemos usar la función <code>ggsurvplot()</code> para dibujar las curvas de supervivencia y realizar la prueba de log-rank al mismo tiempo:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, event) <span class="sc">~</span> group, <span class="at">data =</span> dat)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(fit,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">pval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">pval.method =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Como podemos ver, los valores <span class="math inline">\(p\)</span> y las conclusiones son las mismas (cualquier diferencia con los resultados a mano se debe al redondeo). Al igual que con la estimación de Kaplan-Meier, hacemos otro ejemplo con un conjunto de datos más grande. Considera los datos sobre los tiempos hasta la infección por estafilococo en pacientes con quemaduras, también disponibles en <code>{KMsurv}</code>. Puedes encontrar más información sobre el conjunto de datos en <a href="https://cran.r-project.org/web/packages/KMsurv/">CRAN</a> o con <code>?burn</code>.]</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cargar datos</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(burn)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># previsualizar datos</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(burn)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Obs Z1 Z2 Z3 Z4 Z5 Z6 Z7 Z8 Z9 Z10 Z11 T1 D1 T2 D2 T3 D3
+1   1  0  0  0 15  0  0  1  1  0   0   2 12  0 12  0 12  0
+2   2  0  0  1 20  0  0  1  0  0   0   4  9  0  9  0  9  0
+3   3  0  0  1 15  0  0  0  1  1   0   2 13  0 13  0  7  1
+4   4  0  0  0 20  1  0  1  0  0   0   2 11  1 29  0 29  0
+5   5  0  0  1 70  1  1  1  1  0   0   2 28  1 31  0  4  1
+6   6  0  0  1 20  1  0  1  0  0   0   4 11  0 11  0  8  1</code></pre>
+</div>
+</div>
+<p>Usando la prueba de log-rank, queremos probar la hipótesis de diferencia en el tiempo hasta la infección por estafilococo (variable <code>T3</code>) entre pacientes cuyas quemaduras fueron tratadas con un método de baño rutinario (<code>Z1 = 0</code>) frente a aquellos cuya limpieza corporal se realizó inicialmente con gluconato de clorhexidina al 4% (<code>Z1 = 1</code>). El indicador de evento está en la variable <code>D3</code>.</p>
+<p>Para esta prueba, usamos una alternativa de dos colas y un nivel de significancia del 5%.</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ajuste</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(T3, D3) <span class="sc">~</span> Z1, <span class="at">data =</span> burn)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico con prueba de log-rank</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(fit,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">pval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">pval.method =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><em>En la muestra</em>, parece que el tiempo hasta la infección para los pacientes con baño rutinario (<code>Z1 = 0</code>) es menor que para los pacientes con limpieza corporal (<code>Z1 = 1</code>). Esto es así porque el porcentaje de pacientes que no han experimentado la infección disminuye más rápidamente, por lo que la tasa de riesgo es mayor. Sin embargo, esta conclusión no puede generalizarse a la <em>población</em> sin realizar una prueba estadística sólida. Y basándonos en el resultado de la prueba de log-rank, no rechazamos la hipótesis de que el tiempo hasta la infección es el mismo entre los dos grupos de pacientes (valor <span class="math inline">\(p\)</span> = 0.051).</p>
+</section>
+<section id="estimación-estadística-de-la-función-de-riesgo-acumulado-el-estimador-de-aalen-nelson" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="estimación-estadística-de-la-función-de-riesgo-acumulado-el-estimador-de-aalen-nelson"><span class="header-section-number">5.5</span> Estimación estadística de la función de riesgo acumulado: el estimador de Aalen Nelson</h2>
+<p>Otra función importante en el análisis de supervivencia es la función de riesgo acumulado <span class="math inline">\(H(t)\)</span>, que se define como: <span class="math display">\[H(t) = \int_0^t h(u) du.\]</span> El estimador de Aalen-Nelson es un estimador no paramétrico de la función de riesgo acumulado <span class="math inline">\(H(t)\)</span>, definido como: <span class="math display">\[\hat{H}(t) = \sum_{j:y_{(j)} \le t} \frac{d_{(j)}}{R_{(j)}},\]</span> donde <span class="math inline">\(d_{(j)}\)</span> es el número de eventos en el tiempo <span class="math inline">\(y_{(j)}\)</span> y <span class="math inline">\(R_{(j)}\)</span> es el número de individuos en riesgo justo antes del tiempo <span class="math inline">\(y_{(j)}\)</span>. El estimador de Aalen-Nelson se interpreta como la suma acumulativa de las tasas de eventos observadas en cada tiempo de evento distinto hasta el tiempo <span class="math inline">\(t\)</span>. Es una función escalonada que aumenta en cada tiempo de evento distinto. El estimador de Aalen-Nelson se puede calcular fácilmente en R utilizando la función <code>survfit()</code> del paquete <code>{survival}</code>. Aquí hay un ejemplo utilizando el conjunto de datos <code>tongue</code> del paquete <code>{KMsurv}</code>:</p>
+<div class="cell" data-ecoh="false">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cargar datos</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(KMsurv)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(tongue)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># previsualizar datos</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tongue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  type time delta
+1    1    1     1
+2    1    3     1
+3    1    3     1
+4    1    4     1
+5    1   10     1
+6    1   13     1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ajustar el modelo de supervivencia</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(time, delta) <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> tongue)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># calcular el estimador de Aalen-Nelson</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>aalen_nelson <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(fit<span class="sc">$</span>n.event <span class="sc">/</span> fit<span class="sc">$</span>n.risk)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gráfico del estimador de Aalen-Nelson</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit<span class="sc">$</span>time, aalen_nelson,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">"s"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Tiempo"</span>,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Función de riesgo acumulado"</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Estimador de Aalen-Nelson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Como puedes ver, el estimador de Aalen-Nelson proporciona una estimación de la función de riesgo acumulado a lo largo del tiempo. La función de riesgo acumulado es útil para comprender la probabilidad acumulada de que ocurra un evento a lo largo del tiempo y puede ser utilizada en conjunto con otras funciones de supervivencia para obtener una visión más completa del proceso de supervivencia.</p>
+</section>
+<section id="modelado-de-datos-de-supervivencia-el-modelo-de-riesgos-proporcionales-de-cox" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="modelado-de-datos-de-supervivencia-el-modelo-de-riesgos-proporcionales-de-cox"><span class="header-section-number">5.6</span> Modelado de datos de supervivencia: el modelo de riesgos proporcionales de Cox</h2>
+<p>Como habrás notado, no mostramos cómo <em>modelar</em> datos de supervivencia. Existen varios modelos de regresión que se pueden aplicar a los datos de supervivencia, siendo el más común el semiparamétrico o <strong>Modelo de riesgos proporcionales de Cox</strong>. Este modelo asume que la función de riesgo de un individuo es el producto de una función de riesgo base (que depende del tiempo pero no de las covariables) y un término que depende de las covariables pero no del tiempo. La suposición clave es que las razones de riesgos entre dos individuos son constantes a lo largo del tiempo (de ahí el término “proporcionales”). Este modelo es muy flexible y ampliamente utilizado en análisis de supervivencia.<span class="citation" data-cites="Cox72">[<a href="#ref-Cox72" role="doc-biblioref">3</a>]</span></p>
+<p>La <strong>Regresión de Cox</strong> es un método esencial en la <strong>Medicina</strong> para analizar el <strong>tiempo de supervivencia</strong> hasta que ocurre un evento de interés (como la muerte, la recurrencia de una enfermedad, o el alta hospitalaria). Permite evaluar el efecto de múltiples variables (covariables) sobre el riesgo (o <em>hazard</em>) de que ocurra el evento.</p>
+<p>Con el modelo de Cox, modelamos el impacto de diferentes factores <span class="math inline">\(X_1, X_2, \ldots, X_q\)</span> en la supervivencia a través de su impacto en la función de riesgo:</p>
+<p><span class="math display">\[h(t|\textbf{X}) = h_0 (t) \exp(\beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_q X_q),\]</span> donde:</p>
+<ul>
+<li><span class="math inline">\(h(t|\textbf{X})\)</span> es la tasa instantánea de muerte (o riesgo instantáneo) condicionada a haber sobrevivido hasta el tiempo <span class="math inline">\(t\)</span>.</li>
+<li><span class="math inline">\(h_0 (t)\)</span> es el riesgo basal a nivel poblacional, es decir, la función de riesgo subyacente. Describe cómo evoluciona el riesgo de una persona promedio a lo largo del tiempo.</li>
+<li><span class="math inline">\(\exp(\beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_q X_q)\)</span> describe cómo las covariables afectan al riesgo. En particular, un aumento de una unidad en <span class="math inline">\(x_i\)</span> multiplica el riesgo por un factor de <span class="math inline">\(\exp(\beta_i)\)</span>.</li>
+</ul>
+<section id="ejemplo-modelo-de-cox-en-oncología-médica" class="level3" data-number="5.6.1">
+<h3 data-number="5.6.1" class="anchored" data-anchor-id="ejemplo-modelo-de-cox-en-oncología-médica"><span class="header-section-number">5.6.1</span> Ejemplo modelo de Cox en oncología médica</h3>
+<p>El modelo de Cox se puede ajustar fácilmente en R utilizando la función <code>coxph()</code> del paquete <code>{survival}</code>. A continuación, te presento un ejemplo contextualizado en oncología médica. Este ejemplo simula el análisis del tiempo hasta la <strong>recurrencia del cáncer</strong> en pacientes, evaluando el efecto de la <strong>Edad</strong> y el <strong>Estadio del tumor</strong> al momento del diagnóstico. El contexto Médico es el siguiente:</p>
+<p><strong>Objetivo:</strong> Determinar qué factores (Edad y Estadio del tumor) influyen en el tiempo que transcurre hasta la <strong>recurrencia</strong> del cáncer de mama en una cohorte de pacientes.</p>
+<p><strong>Variables:</strong></p>
+<p>-<strong><code>Tiempo</code></strong> (en meses): Tiempo de seguimiento hasta la recurrencia o la censura. -<strong><code>Evento</code></strong> (0/1): 1 si ocurrió la recurrencia, 0 si fue censurado (p.ej., el paciente se perdió en el seguimiento o el estudio terminó). -<strong><code>Edad</code></strong> (años): Edad de la paciente al diagnóstico (variable continua). -<strong><code>Estadio</code></strong> (I, II, III): Estadio del tumor al diagnóstico (variable categórica).</p>
+<p>El análisis de supervivencia mediante la <strong>Regresión de Cox</strong> se emplea para modelar el tiempo transcurrido hasta un evento, permitiendo la inclusión de covariables. En este estudio, examinaremos la influencia de la edad y el estadio del tumor sobre el tiempo hasta la recurrencia del cáncer.</p>
+<p>Cargamos los paquetes necesarios y preparamos datos de ejemplo (utilizaremos un conjunto de datos simulado o uno disponible en un paquete para la demostración).</p>
+<p>Visualizamos la supervivencia por grupos para entender las diferencias crudas antes del ajuste de Cox.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear el objeto de supervivencia</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>surv_object <span class="ot">&lt;-</span> <span class="fu">Surv</span>(<span class="at">time =</span> datos<span class="sc">$</span>Tiempo, <span class="at">event =</span> datos<span class="sc">$</span>Evento)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuste de Kaplan-Meier por Estadio</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>fit_km <span class="ot">&lt;-</span> <span class="fu">survfit</span>(surv_object <span class="sc">~</span> Estadio, <span class="at">data =</span> datos)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  fit_km,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pval =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.title =</span> <span class="st">"Estadio"</span>,</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Curva de Supervivencia de Kaplan-Meier por Estadio del Tumor"</span>,</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Tiempo de Seguimiento (meses)"</span>,</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Probabilidad de Supervivencia"</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/kaplan_meier-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ajustamos el modelo de Cox para estimar los <strong>Hazard Ratios (HR)</strong> ajustando por la Edad y el Estadio.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar el modelo de Cox</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>modelo_cox <span class="ot">&lt;-</span> <span class="fu">coxph</span>(surv_object <span class="sc">~</span> Edad <span class="sc">+</span> Estadio, <span class="at">data =</span> datos)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumen del modelo</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cox)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = surv_object ~ Edad + Estadio, data = datos)
+
+  n= 227, number of events= 164 
+
+              coef exp(coef) se(coef)     z Pr(&gt;|z|)    
+Edad       0.01101   1.01107  0.00938 1.173 0.240653    
+EstadioII  0.35786   1.43027  0.19884 1.800 0.071904 .  
+EstadioIII 0.86995   2.38680  0.22933 3.794 0.000149 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+           exp(coef) exp(-coef) lower .95 upper .95
+Edad           1.011     0.9891    0.9926     1.030
+EstadioII      1.430     0.6992    0.9686     2.112
+EstadioIII     2.387     0.4190    1.5227     3.741
+
+Concordance= 0.61  (se = 0.025 )
+Likelihood ratio test= 18.73  on 3 df,   p=3e-04
+Wald test            = 19.52  on 3 df,   p=2e-04
+Score (logrank) test = 20.37  on 3 df,   p=1e-04</code></pre>
+</div>
+</div>
+</section>
+<section id="gráfico-de-incidencia-acumulada" class="level3" data-number="5.6.2">
+<h3 data-number="5.6.2" class="anchored" data-anchor-id="gráfico-de-incidencia-acumulada"><span class="header-section-number">5.6.2</span> Gráfico de Incidencia Acumulada</h3>
+<p>El gráfico de <strong>incidencia acumulada</strong> es simplemente el complemento de la función de supervivencia: <span class="math inline">\(1 - S(t)\)</span>. Representa la probabilidad acumulada de que el <strong>evento</strong> (recurrencia) haya ocurrido en el tiempo <span class="math inline">\(t\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una función para la Incidencia Acumulada: 1 - S(t)</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto invierte las curvas del gráfico anterior.</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  fit_km,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">"event"</span>, <span class="co"># La función "event" grafica la Incidencia Acumulada (1-S(t))</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pval =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.title =</span> <span class="st">"Estadio"</span>,</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Incidencia Acumulada de Recurrencia Ajustada por Modelo de Cox"</span>,</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Tiempo de Seguimiento (meses)"</span>,</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Probabilidad de Recurrencia Acumulada (F(t))"</span>,</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># Asegurar el eje y de 0 a 1</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/cumulative_incidence_plot-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretación-de-resultados" class="level3" data-number="5.6.3">
+<h3 data-number="5.6.3" class="anchored" data-anchor-id="interpretación-de-resultados"><span class="header-section-number">5.6.3</span> Interpretación de Resultados</h3>
+<p>El resumen del modelo muestra los coeficientes (<span class="math inline">\(\beta\)</span>), los Errores Estándar (se(coef)), el estadístico de Wald, el valor p y el <strong>Hazard Ratio (<span class="math inline">\(e^{\beta}\)</span>) o HR</strong> con sus intervalos de confianza.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraer coeficientes y HRs de forma limpia</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>resultados_cox <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">summary</span>(modelo_cox)<span class="sc">$</span>coefficients)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>resultados_cox<span class="sc">$</span>HR <span class="ot">&lt;-</span> <span class="fu">exp</span>(resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">coef</span><span class="st">`</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">IC 95% Inferior</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">exp</span>(resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">coef</span><span class="st">`</span> <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">se(coef)</span><span class="st">`</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">IC 95% Superior</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">exp</span>(resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">coef</span><span class="st">`</span> <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> resultados_cox<span class="sc">$</span><span class="st">`</span><span class="at">se(coef)</span><span class="st">`</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  resultados_cox <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">`</span><span class="at">HR</span><span class="st">`</span>, <span class="st">`</span><span class="at">z</span><span class="st">`</span>, <span class="st">`</span><span class="at">Pr(&gt;|z|)</span><span class="st">`</span>, <span class="st">`</span><span class="at">IC 95% Inferior</span><span class="st">`</span>, <span class="st">`</span><span class="at">IC 95% Superior</span><span class="st">`</span>),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">"Resultados de la Regresión de Cox (Riesgos Proporcionales)"</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits =</span> <span class="dv">3</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Resultados de la Regresión de Cox (Riesgos Proporcionales)</caption>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 25%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">HR</th>
+<th style="text-align: right;">z</th>
+<th style="text-align: right;">Pr(&gt;|z|)</th>
+<th style="text-align: right;">IC 95% Inferior</th>
+<th style="text-align: right;">IC 95% Superior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Edad</td>
+<td style="text-align: right;">1.011</td>
+<td style="text-align: right;">1.173</td>
+<td style="text-align: right;">0.241</td>
+<td style="text-align: right;">0.993</td>
+<td style="text-align: right;">1.030</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">EstadioII</td>
+<td style="text-align: right;">1.430</td>
+<td style="text-align: right;">1.800</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">0.969</td>
+<td style="text-align: right;">2.112</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">EstadioIII</td>
+<td style="text-align: right;">2.387</td>
+<td style="text-align: right;">3.794</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">1.523</td>
+<td style="text-align: right;">3.741</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="conclusiones" class="level3" data-number="5.6.4">
+<h3 data-number="5.6.4" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">5.6.4</span> Conclusiones</h3>
+<ul>
+<li><strong>Edad:</strong> Por cada <strong>aumento de un año</strong> en la edad del paciente, el riesgo de recurrencia (HR) es de aproximadamente <span class="math inline">\(HR_{Edad}\)</span>. Un valor de <span class="math inline">\(HR_{Edad} &gt; 1\)</span> (y con <span class="math inline">\(p &lt; 0.05\)</span>) indica que ser mayor aumenta el riesgo.</li>
+<li><strong>Estadio (Categorías):</strong></li>
+<li><strong>Estadio II vs.&nbsp;I (Referencia):</strong> El riesgo de recurrencia en pacientes con Estadio II es <span class="math inline">\(HR_{Estadio II}\)</span> veces el riesgo de los pacientes con Estadio I, manteniendo la edad constante.</li>
+<li><strong>Estadio III vs.&nbsp;I (Referencia):</strong> El riesgo de recurrencia en pacientes con Estadio III es <span class="math inline">\(HR_{Estadio III}\)</span> veces el riesgo de los pacientes con Estadio I, manteniendo la edad constante.</li>
+</ul>
+<p>La interpretación de los <strong>Hazard Ratios (<span class="math inline">\(HR\)</span>)</strong> es la clave:</p>
+<ul>
+<li><span class="math inline">\(HR &gt; 1\)</span>: La covariable aumenta el riesgo de recurrencia.</li>
+<li><span class="math inline">\(HR &lt; 1\)</span>: La covariable disminuye el riesgo de recurrencia.</li>
+<li><span class="math inline">\(HR = 1\)</span>: La covariable no tiene efecto sobre el riesgo.</li>
+</ul>
+</section>
+<section id="verificación-del-supuesto-de-riesgos-proporcionales-rp" class="level3" data-number="5.6.5">
+<h3 data-number="5.6.5" class="anchored" data-anchor-id="verificación-del-supuesto-de-riesgos-proporcionales-rp"><span class="header-section-number">5.6.5</span> Verificación del Supuesto de Riesgos Proporcionales (RP)</h3>
+<p>El modelo de Cox asume que el <strong>Hazard Ratio es constante a lo largo del tiempo</strong>. Esto se verifica con el test de los residuos de Schoenfeld.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test del supuesto de RP</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>test_rp <span class="ot">&lt;-</span> <span class="fu">cox.zph</span>(modelo_cox)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_rp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        chisq df    p
+Edad    0.319  1 0.57
+Estadio 2.249  2 0.32
+GLOBAL  2.302  3 0.51</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gráfico de los residuos de Schoenfeld</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcoxzph</span>(test_rp, <span class="at">caption =</span> <span class="st">"Gráfico de Residuos de Schoenfeld para el Test de Riesgos Proporcionales"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/proportional_hazards-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Si el p-valor global (<span class="math inline">\(p &gt; 0.05\)</span>) en el test de los residuos de Schoenfeld, se asume que se cumple el supuesto de Riesgos Proporcionales. Los residuos deben mostrar una línea horizontal sin tendencias claras.</p>
+</section>
+<section id="narrativo-para-publicación-científica" class="level3" data-number="5.6.6">
+<h3 data-number="5.6.6" class="anchored" data-anchor-id="narrativo-para-publicación-científica"><span class="header-section-number">5.6.6</span> Narrativo para publicación científica:</h3>
+<p>En un análisis de supervivencia utilizando el modelo de riesgos proporcionales de Cox, se evaluó el impacto de la edad y el estadio del tumor en el tiempo hasta la recurrencia del cáncer de mama en una cohorte de pacientes.</p>
+<p>Los resultados indicaron que por cada aumento de un año en la edad, el riesgo de recurrencia aumentó en un factor de 1.011 (HR; IC 95%: [0.993, 1.030], p = 0.241). Además, los pacientes con Estadio II presentaron un riesgo de recurrencia 1.430 veces mayor (HR; IC 95%: [0.969, 2.112], p = 0.072) en comparación con aquellos en Estadio I, si bien este efecto NO fue significativo. De manera similar, los pacientes en Estadio III mostraron un riesgo estadísticamente significativamente elevado de recurrencia, con un HR de 2.387 (IC 95%: [1.523, 3.741], p = &lt;0.001) en comparación con los pacientes en Estadio I.</p>
+<p>El gráfico de incidencia acumulada confirmó que la probabilidad acumulada de recurrencia era considerablemente mayor y se alcanzaba más rápidamente en pacientes con estadios más avanzados (Estadio III), en comparación con los estadios I y II. El supuesto de riesgos proporcionales fue verificado y no se encontró evidencia de violación (p-global = 0.512). Estos hallazgos sugieren que tanto la edad como el estadio del tumor son factores críticos que influyen en la probabilidad de recurrencia del cáncer de mama.</p>
+</section>
+<section id="ejemplo-extendido" class="level3" data-number="5.6.7">
+<h3 data-number="5.6.7" class="anchored" data-anchor-id="ejemplo-extendido"><span class="header-section-number">5.6.7</span> Ejemplo extendido:</h3>
+<p>Ampliamos el ejemplo de Regresión de Cox para incluir una <strong>variable categórica adicional</strong>, un término de <strong>interacción</strong> y, crucialmente, el <strong>gráfico de incidencia acumulada</strong> (o función de supervivencia, que es su complemento).</p>
+<p>El nuevo ejemplo contextualizado en oncología incluirá:</p>
+<ol type="1">
+<li><strong>Variable Categórica:</strong> <strong>Terapia Recibida</strong> (Quimioterapia vs.&nbsp;Radioterapia).<br>
+</li>
+<li><strong>Interacción:</strong> <strong>Edad</strong> * <strong>Estadio</strong> (para ver si el efecto de la edad en el riesgo de recurrencia depende del estadio del tumor).</li>
+</ol>
+<p>En este ejemplo se modela el tiempo hasta la <strong>recurrencia del cáncer</strong>, evaluando el efecto de la <strong>Edad</strong>, el <strong>Estadio</strong> del tumor, la <strong>Terapia Recibida</strong>, y la <strong>interacción</strong> entre Edad y Estadio.</p>
+<p><strong>Variables Adicionales:</strong></p>
+<p>-<strong><code>Terapia</code></strong> (Quimio/Radio): Tipo de tratamiento primario (variable categórica/nominal).<br>
+-<strong>Interacción <code>Edad:Estadio</code></strong>: Evalúa si el efecto de la edad en el riesgo de recurrencia difiere en los Estadios II y III comparados con el Estadio I.</p>
+<p>Cargamos los paquetes y preparamos los datos, añadiendo la variable <code>Terapia</code> para la demostración.</p>
+<p>Ajustamos el modelo de Cox incluyendo la variable categórica <code>Terapia</code> y el término de interacción <code>Edad:Estadio</code>. El término <code>Edad * Estadio</code> es una forma abreviada en R para incluir los efectos principales (<code>Edad</code> + <code>Estadio</code>) y el término de interacción (<code>Edad:Estadio</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Objeto de supervivencia</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>surv_object <span class="ot">&lt;-</span> <span class="fu">Surv</span>(<span class="at">time =</span> datos_ext<span class="sc">$</span>Tiempo, <span class="at">event =</span> datos_ext<span class="sc">$</span>Evento)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustar el modelo de Cox con interacción y la nueva variable categórica</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>modelo_cox_int <span class="ot">&lt;-</span> <span class="fu">coxph</span>(surv_object <span class="sc">~</span> Edad <span class="sc">*</span> Estadio <span class="sc">+</span> Terapia, <span class="at">data =</span> datos_ext)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Resumen del modelo</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_cox_int)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = surv_object ~ Edad * Estadio + Terapia, data = datos_ext)
+
+  n= 227, number of events= 164 
+
+                         coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+Edad                  0.05309   1.05453  0.02233  2.377  0.01744 * 
+EstadioII             3.78339  43.96466  1.62346  2.330  0.01978 * 
+EstadioIII            3.86698  47.79776  1.97229  1.961  0.04992 * 
+TerapiaQuimioterapia  0.52566   1.69157  0.17473  3.008  0.00263 **
+Edad:EstadioII       -0.05374   0.94768  0.02532 -2.122  0.03383 * 
+Edad:EstadioIII      -0.04665   0.95442  0.03028 -1.541  0.12336   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+                     exp(coef) exp(-coef) lower .95 upper .95
+Edad                    1.0545    0.94829    1.0094    1.1017
+EstadioII              43.9647    0.02275    1.8248 1059.2372
+EstadioIII             47.7978    0.02092    1.0014 2281.5031
+TerapiaQuimioterapia    1.6916    0.59117    1.2010    2.3824
+Edad:EstadioII          0.9477    1.05520    0.9018    0.9959
+Edad:EstadioIII         0.9544    1.04775    0.8994    1.0128
+
+Concordance= 0.654  (se = 0.025 )
+Likelihood ratio test= 34.78  on 6 df,   p=5e-06
+Wald test            = 31.44  on 6 df,   p=2e-05
+Score (logrank) test = 33.35  on 6 df,   p=9e-06</code></pre>
+</div>
+</div>
+<p>El modelo incluye 7 coeficientes (log-HRs):</p>
+<ul>
+<li><strong>Efectos Principales:</strong> <code>Edad</code>, <code>EstadioII</code>, <code>EstadioIII</code>, <code>TerapiaQuimioterapia</code>.</li>
+<li><strong>Interacciones:</strong> <code>Edad:EstadioII</code>, <code>Edad:EstadioIII</code>.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coeficiente</th>
+<th style="text-align: left;">Interpretación <span class="math inline">\(\mathbf{e^{\beta}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Edad</strong></td>
+<td style="text-align: left;">HR de la edad para pacientes con <strong>Estadio I</strong> y <strong>Radioterapia</strong> (grupo de referencia).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>EstadioII</strong></td>
+<td style="text-align: left;">HR de un paciente con Estadio II <strong>frente</strong> a uno con Estadio I, <em>cuando la Edad = 0</em> (aunque esto no es clínicamente interpretable, establece la línea base).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>TerapiaQuimioterapia</strong></td>
+<td style="text-align: left;">HR de recibir Quimioterapia <strong>frente</strong> a Radioterapia, para un paciente con <strong>Estadio I</strong> y <em>Edad = 0</em>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Edad:EstadioII</strong></td>
+<td style="text-align: left;">El <strong>cambio</strong> en el log-HR de la Edad por cada año adicional, si el paciente es Estadio II <strong>frente</strong> a Estadio I.</td>
+</tr>
+</tbody>
+</table>
+<p>Un <strong>p-valor bajo</strong> para el término de interacción (<code>Edad:EstadioII</code> o <code>Edad:EstadioIII</code>) sugiere que el efecto de la Edad sobre el riesgo de recurrencia es significativamente <em>diferente</em> según el estadio.</p>
+<p>Podemos usar el modelo de Cox para predecir la curva de supervivencia (<strong>Probabilidad de Supervivencia</strong>) para diferentes perfiles de pacientes.</p>
+<section id="curvas-de-supervivencia-ajustadas-edad-promedio" class="level4" data-number="5.6.7.1">
+<h4 data-number="5.6.7.1" class="anchored" data-anchor-id="curvas-de-supervivencia-ajustadas-edad-promedio"><span class="header-section-number">5.6.7.1</span> Curvas de Supervivencia Ajustadas (Edad promedio)</h4>
+<p>Predeciremos las curvas de supervivencia (probabilidad de no recurrencia) para cada estadio, manteniendo la edad en su promedio y asumiendo una terapia específica.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Definir los nuevos datos para la predicción</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>media_edad <span class="ot">&lt;-</span> <span class="fu">mean</span>(datos_ext<span class="sc">$</span>Edad)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>nuevos_datos <span class="ot">&lt;-</span> <span class="fu">with</span>(datos_ext,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Estadio =</span> <span class="fu">factor</span>(<span class="fu">levels</span>(Estadio), <span class="at">levels =</span> <span class="fu">levels</span>(Estadio)),</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Edad =</span> <span class="fu">rep</span>(media_edad, <span class="dv">3</span>),</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">Terapia =</span> <span class="fu">factor</span>(<span class="st">"Quimioterapia"</span>, <span class="at">levels =</span> <span class="fu">levels</span>(Terapia)) <span class="co"># Fijamos Terapia en Quimioterapia</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                     ))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calcular las curvas de supervivencia ajustadas</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>fit_cox_ajustado <span class="ot">&lt;-</span> <span class="fu">survfit</span>(modelo_cox_int, <span class="at">newdata =</span> nuevos_datos)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Graficar</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  fit_cox_ajustado,</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nuevos_datos,</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">pval =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.title =</span> <span class="st">"Estadio"</span>,</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Probabilidad de Supervivencia Ajustada"</span>,</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Tiempo de Seguimiento (meses)"</span>,</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Probabilidad de Supervivencia (S(t))"</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/survival_curves_predict-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="gráfico-de-incidencia-acumulada-ajustada" class="level4" data-number="5.6.7.2">
+<h4 data-number="5.6.7.2" class="anchored" data-anchor-id="gráfico-de-incidencia-acumulada-ajustada"><span class="header-section-number">5.6.7.2</span> Gráfico de Incidencia Acumulada Ajustada</h4>
+<p>El gráfico de <strong>incidencia acumulada</strong> es simplemente el complemento de la función de supervivencia: <span class="math inline">\(1 - S(t)\)</span>. Representa la probabilidad acumulada de que el <strong>evento</strong> (recurrencia) haya ocurrido en el tiempo <span class="math inline">\(t\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crear una función para la Incidencia Acumulada: 1 - S(t)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Esto invierte las curvas del gráfico anterior.</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  fit_cox_ajustado,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nuevos_datos,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">"event"</span>, <span class="co"># La función "event" grafica la Incidencia Acumulada (1-S(t))</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">conf.int =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pval =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">risk.table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend.title =</span> <span class="st">"Estadio (Edad promedio)"</span>,</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Incidencia Acumulada Ajustada"</span>,</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Tiempo de Seguimiento (meses)"</span>,</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Probabilidad de Recurrencia Acumulada (F(t))"</span>,</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># Asegurar el eje y de 0 a 1</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TEMA-5_files/figure-html/cumulative_incidence_plot_adjusted-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">Referencias</h1>
+<div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-kaplan1958" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Kaplan EL, Meier P. Nonparametric estimation from incomplete observations. Journal of the American statistical association. 1958;53(282):457–81. </div>
+</div>
+<div id="ref-mantel66" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Mantel N. Evaluation of survival data and two new rank order statistics arising in its consideration. Cancer Chemotherapy Reports. 1966;50(3):163–70. </div>
+</div>
+<div id="ref-Cox72" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Cox DR. Regression models and life-tables. Journal of the Royal Statistical Society: Series B (Methodological). 1972;34(2):187–202. </div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./TEMA-4.html" class="pagination-link" aria-label="TEMA 4: REGRESIÓN LOGISTICA">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">TEMA 4: REGRESIÓN LOGISTICA</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
