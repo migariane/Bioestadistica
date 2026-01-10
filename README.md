@@ -1,5 +1,5 @@
 # Bioestadistica
-Biestadistica aplicada para el análisis de estudios epidemiologicos en medicina
+Biestadística aplicada para el análisis de estudios epidemiológicos en medicina
 
 ## A quién va dirigido este libro
 
