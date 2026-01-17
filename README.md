@@ -21,13 +21,8 @@ The **online version** of the textbook is hosted by **github pages** and the mat
 
 [![DOI](https://zenodo.org/badge/1131783684.svg)](https://doi.org/10.5281/zenodo.18277804)
 
-
-https://zenodo.org/badge/1131783684.svg
-
-
-https://doi.org/10.5281/zenodo.18277804
-
-
+.. image:: https://zenodo.org/badge/1131783684.svg
+  :target: https://doi.org/10.5281/zenodo.18277804
 
 
 
