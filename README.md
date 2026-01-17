@@ -18,7 +18,7 @@ This textbook was made using  [Quarto](https://quarto.org/) which is an open-sou
 
 The **online version** of the textbook is hosted by **github pages** and the material is **free to use** for **non-commercial** purposes, and is licensed under the **MIT License**.   
 
-[!](https://zenodo.org/badge/DOI/10.5281/zenodo.18277805.svg)]
-[DOI](https://doi.org/10.5281/zenodo.18277805)
+![](https://zenodo.18277805.svg)]
+![DOI](https://doi.org/10.5281/zenodo.18277805)
 
 
